@@ -28,7 +28,7 @@ DSH 的悬浮番茄钟插件，v1.0.0，MIT，仓库 https://github.com/heshuren
 ## 命令
 
 ```sh
-pnpm install --ignore-workspace   # 若 $HOME 下有 pnpm-workspace.yaml，必须带这个 flag，否则 pnpm 拒绝安装
+pnpm install           # 直接装；仓库根目录的 pnpm-workspace.yaml（allowBuilds: esbuild）已允许 esbuild 的安装脚本
 pnpm run typecheck
 pnpm run build
 pnpm run test:core
@@ -36,6 +36,8 @@ pnpm run test:client
 pnpm run verify        # typecheck + build + test:core + test:client
 pnpm run check:fresh   # 重新构建，并断言 lib/ 与 src/ 一致
 ```
+
+本仓库是自己的工作区根：`pnpm-workspace.yaml` 只用 `allowBuilds: esbuild` 声明允许 esbuild 的安装脚本（pnpm 11 对未决定的构建脚本直接判安装失败），所以直接 `pnpm install` 即可。CI 用 `pnpm install --frozen-lockfile`。
 
 ## 不变量
 

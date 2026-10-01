@@ -131,7 +131,7 @@ The layer states `z-index: 120`: **above** every in-tree player surface (`40` / 
 ## Development
 
 ```sh
-pnpm install            # if $HOME contains a pnpm-workspace.yaml, use pnpm install --ignore-workspace
+pnpm install            # just install; the repo's pnpm-workspace.yaml already allows esbuild's install script
 pnpm run typecheck      # tsc -p tsconfig.json (strict + noUncheckedIndexedAccess + noUnusedLocals/Parameters)
 pnpm run build          # esbuild -> lib/client.js; tsc -> lib/index.js and lib/core/*.js
 pnpm run test:core      # node --test tests/ (pure-core unit tests)
@@ -139,6 +139,8 @@ pnpm run test:client    # node scripts/smoke.mjs (jsdom smoke test)
 pnpm run verify         # typecheck + test (test = build + test:core + test:client)
 pnpm run check:fresh    # rebuild and fail when lib/ drifts from src/
 ```
+
+This repository is its own workspace root: the `pnpm-workspace.yaml` at the top does exactly one thing — `allowBuilds: esbuild` allows esbuild's install script (pnpm 11 requires each project to decide about dependency build scripts, and an undecided script fails the install outright). CI uses `pnpm install --frozen-lockfile`.
 
 Change `src/`, **never `lib/`**: `lib/` is the committed artifact (GitHub installs run no build step) and `pnpm run check:fresh` fails as soon as it drifts. CI runs the same gates; see `.github/workflows/ci.yml`.
 

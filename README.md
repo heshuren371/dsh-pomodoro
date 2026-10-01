@@ -131,7 +131,7 @@ dsh-pomodoro/
 ## 开发
 
 ```sh
-pnpm install            # 若 $HOME 下有 pnpm-workspace.yaml，改用 pnpm install --ignore-workspace
+pnpm install            # 直接装；仓库根目录的 pnpm-workspace.yaml 已允许 esbuild 的安装脚本
 pnpm run typecheck      # tsc -p tsconfig.json（strict + noUncheckedIndexedAccess + noUnusedLocals/Parameters）
 pnpm run build          # esbuild 出 lib/client.js；tsc 出 lib/index.js 与 lib/core/*.js
 pnpm run test:core      # node --test tests/（纯核心单元测试）
@@ -139,6 +139,8 @@ pnpm run test:client    # node scripts/smoke.mjs（jsdom 冒烟测试）
 pnpm run verify         # typecheck + test（test = build + test:core + test:client）
 pnpm run check:fresh    # 重新构建，并在 lib/ 与 src/ 不一致时失败
 ```
+
+本仓库是自己的工作区根：根目录的 `pnpm-workspace.yaml` 只有一件事——用 `allowBuilds: esbuild` 允许 esbuild 的安装脚本（pnpm 11 要求对依赖的构建脚本做出决定，未决定的安装会直接失败）。CI 用 `pnpm install --frozen-lockfile`。
 
 改代码改 `src/`，**不要改 `lib/`**：`lib/` 是提交进仓库的产物（GitHub 安装不跑构建），`pnpm run check:fresh` 会在它漂移时失败。CI 跑同一组门禁，见 `.github/workflows/ci.yml`。
 
