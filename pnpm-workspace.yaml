@@ -1,0 +1,6 @@
+# pnpm 11 asks each project to decide about dependency build scripts, and treats
+# an undecided script as a failed install. esbuild's postinstall only validates
+# the platform binary that its own optional dependency already provides, so it is
+# allowed here; nothing else in this package tree has install scripts.
+allowBuilds:
+  esbuild: true
