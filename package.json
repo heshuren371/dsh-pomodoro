@@ -1,0 +1,86 @@
+{
+  "name": "@local/dsh-pomodoro",
+  "version": "1.0.0",
+  "description": "番茄钟（Pomodoro）悬浮计时器插件：圆环倒计时、专注/短休/长休自动轮转、可拖动可配置、今日与累计统计，浮在所有界面层之上（含音乐播放器全屏播放器）。TypeScript 编写，无运行时依赖。",
+  "license": "MIT",
+  "author": "heshuren371",
+  "type": "module",
+  "icon": "./icon.svg",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "lib",
+    "cordis.patch.yml",
+    "icon.svg",
+    "locale",
+    "dsh-plugin.json",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/heshuren371/dsh-pomodoro.git"
+  },
+  "homepage": "https://github.com/heshuren371/dsh-pomodoro#readme",
+  "bugs": {
+    "url": "https://github.com/heshuren371/dsh-pomodoro/issues"
+  },
+  "keywords": [
+    "dsh",
+    "deepseek-harness",
+    "plugin",
+    "pomodoro",
+    "timer",
+    "focus",
+    "productivity",
+    "typescript"
+  ],
+  "engines": {
+    "node": "^22.19.0 || >=24.0.0"
+  },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "typecheck": "tsc -p tsconfig.json",
+    "test:core": "node --test tests/",
+    "test:client": "node scripts/smoke.mjs",
+    "test": "npm run build && npm run test:core && npm run test:client",
+    "verify": "npm run typecheck && npm run test",
+    "check:fresh": "node scripts/check-build-fresh.mjs"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.3",
+    "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "esbuild": "^0.28.2",
+    "jsdom": "^30.1.1",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "typescript": "^7.0.2"
+  },
+  "packageManager": "pnpm@11.21.0",
+  "dsh": {
+    "compatibility": {
+      "dsh": ">=0.1.6-alpha.1 <0.3.0",
+      "dshReleases": {
+        "0.2.0-rc.2": "compatible"
+      }
+    },
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-layout"
+      ]
+    }
+  }
+}

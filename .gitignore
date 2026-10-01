@@ -1,0 +1,8 @@
+node_modules/
+*.tgz
+.DS_Store
+*.log
+
+# Built artifacts are committed on purpose: the plugin is installed straight from
+# GitHub, which runs no lifecycle build step, so lib/ is the shipped artifact.
+# Never add `lib/` here; `pnpm run check:fresh` fails when it drifts from src/.

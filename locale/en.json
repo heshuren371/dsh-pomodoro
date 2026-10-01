@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Pomodoro",
+    "description": "A draggable floating Pomodoro timer with a progress ring, automatic focus/short-break/long-break rotation, sound and desktop alerts, and daily statistics."
+  }
+}

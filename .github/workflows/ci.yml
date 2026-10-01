@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+  workflow_dispatch:
+
+# 门禁与本地一致：类型检查 → 构建 → 产物新鲜度 → 纯核心单元测试 → jsdom 冒烟测试。
+# 任何一条红了都不要合。
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gates:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4 # 版本取自 package.json 的 packageManager
+
+      - uses: actions/setup-node@v4
+        with:
+          # 与 package.json 的 engines.node（^22.19.0 || >=24.0.0）对齐
+          node-version: '24'
+          cache: pnpm
+
+      - name: Install (frozen lockfile)
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        run: pnpm run typecheck
+
+      - name: Build (esbuild client bundle + tsc host/core)
+        run: pnpm run build
+
+      # GitHub 安装不跑构建，所以 lib/ 是随仓库发货的产物：必须在跑测试之前确认
+      # 它就是 src/ 刚刚构建出来的样子，否则下面的测试验的是发不出去的旧产物。
+      # `git diff` 抓已跟踪文件的改动；`git status --porcelain` 补上构建新增的未跟踪文件。
+      - name: Freshness check (lib/ must equal a fresh build)
+        run: |
+          git diff --exit-code -- lib
+          if [ -n "$(git status --porcelain -- lib)" ]; then
+            echo "::error::lib/ is not in sync with src/ — run 'pnpm run build' and commit the result."
+            git status --porcelain -- lib
+            exit 1
+          fi
+          echo "lib/ matches src/"
+
+      - name: Unit tests (pure core)
+        run: pnpm run test:core
+
+      - name: Client smoke test (jsdom)
+        run: pnpm run test:client

@@ -1,0 +1,31 @@
+{
+  "$schema": "https://dsh.community/schemas/dsh-plugin-0.15.json",
+  "manifestVersion": "0.15",
+  "id": "local.dsh-pomodoro",
+  "name": "DSH Pomodoro（番茄钟）",
+  "version": "1.0.0",
+  "facets": {
+    "host": {
+      "entry": "lib/index.js",
+      "apiVersion": "v1alpha1"
+    }
+  },
+  "requires": {
+    "contracts": []
+  },
+  "permissions": [],
+  "contributes": {
+    "commands": []
+  },
+  "subscriptions": [],
+  "license": "MIT",
+  "source": {
+    "repository": "https://github.com/heshuren371/dsh-pomodoro"
+  },
+  "x-dsh-pomodoro": {
+    "permissions": "本插件不申请任何权限，这是诚实状态、不是漏填：Host 半边是空的 apply，Client 半边只渲染卡片并维护浏览器本地状态——不读写文件、不访问网络、不启动进程，所以 permissions 是空数组。",
+    "ui": "Community v0.15 没有表达「DSH 字符串 slot」的协议坐标，因此 UI 绑定不写成 requires.contracts。真实绑定是 package.json 的 exports[\"./client\"] = lib/client.js 加 dsh.client.platform = \"web\"，运行时由 lib/client.js 的 ctx.slots.register({ name: \"shell.overlay\", id: \"dsh-pomodoro\" }) 注册。",
+    "storage": "偏好、统计与卡片位置存在浏览器 localStorage（dsh-pomodoro/store/v2，旧键 dsh-pomodoro/store/v1 首次加载时迁移），不写 $DSH_HOME，也不经过任何 Host service。",
+    "layering": "注册进 shell.overlay 取得生命周期座位，但图层 portal 到 document.body 里 #root 的旁边，z-index 120：高于 dsh-music-player 的树内界面（全屏播放器 40 / 弹层 60 / 灯箱 80），低于宿主自己的对话框与气泡层（900–1100）。"
+  }
+}
